@@ -97,9 +97,11 @@ namespace Service.Simulation.FTX.Services
                 }
 
                 quoteBalance.Amount -= quoteVolume;
+                if (baseBalance == null) baseBalance = new GetBalancesResponse.Balance() { Symbol = market.BaseAsset, Amount = 0 };
+                baseBalance.Amount += request.Size;
 
-                await SetBalanceAsync(new SetBalanceRequest()
-                    {Symbol = quoteBalance.Symbol, Amount = quoteBalance.Amount});
+                await SetBalanceAsync(new SetBalanceRequest() {Symbol = quoteBalance.Symbol, Amount = quoteBalance.Amount});
+                await SetBalanceAsync(new SetBalanceRequest() { Symbol = baseBalance.Symbol, Amount = baseBalance.Amount });
 
                 var price = quoteVolume / request.Size;
 
@@ -169,8 +171,11 @@ namespace Service.Simulation.FTX.Services
 
                 baseBalance.Amount -= request.Size;
 
-                await SetBalanceAsync(new SetBalanceRequest()
-                { Symbol = baseBalance.Symbol, Amount = baseBalance.Amount });
+                if (quoteBalance == null) quoteBalance = new GetBalancesResponse.Balance() { Symbol = market.QuoteAsset, Amount = 0};
+                quoteBalance.Amount += quoteVolume;
+
+                await SetBalanceAsync(new SetBalanceRequest() { Symbol = baseBalance.Symbol, Amount = baseBalance.Amount });
+                await SetBalanceAsync(new SetBalanceRequest() { Symbol = quoteBalance.Symbol, Amount = quoteBalance.Amount });
 
                 var price = quoteVolume / request.Size;
 
