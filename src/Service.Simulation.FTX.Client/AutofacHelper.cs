@@ -5,7 +5,7 @@ namespace Service.Simulation.FTX.Client
 {
     public static class AutofacHelper
     {
-        public static void RegisterLiquidityEngineClient(this ContainerBuilder builder, string simulationFtxGrpcServiceUrl)
+        public static void RegisterSimulationFtxClient(this ContainerBuilder builder, string simulationFtxGrpcServiceUrl)
         {
             var factory = new SimulationFTXClientFactory(simulationFtxGrpcServiceUrl);
 
