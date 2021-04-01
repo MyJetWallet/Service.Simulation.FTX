@@ -15,12 +15,15 @@ namespace Service.Simulation.FTX.Services
         private readonly ILogger<SimulationFtxTradingService> _logger;
         private readonly FTXDataApi _api;
         private readonly IMyNoSqlServerDataWriter<BalancesNoSql> _balanceWriter;
+        private readonly TradeHistory _history;
 
-        public SimulationFtxTradingService(ILogger<SimulationFtxTradingService> logger, FTXDataApi api, IMyNoSqlServerDataWriter<BalancesNoSql> balanceWriter)
+        public SimulationFtxTradingService(ILogger<SimulationFtxTradingService> logger, FTXDataApi api, IMyNoSqlServerDataWriter<BalancesNoSql> balanceWriter,
+            TradeHistory history)
         {
             _logger = logger;
             _api = api;
             _balanceWriter = balanceWriter;
+            _history = history;
         }
 
         public async Task<ExecuteMarketOrderResponse> ExecuteMarketOrderAsync(ExecuteMarketOrderRequest request)
@@ -116,6 +119,8 @@ namespace Service.Simulation.FTX.Services
                     Timestamp = DateTime.UtcNow
                 };
 
+                _history.AddTrade(trade);
+
                 var resp = new ExecuteMarketOrderResponse()
                 {
                     Success = true,
@@ -189,6 +194,8 @@ namespace Service.Simulation.FTX.Services
                     Price = price,
                     Timestamp = DateTime.UtcNow
                 };
+
+                _history.AddTrade(trade);
 
                 var resp = new ExecuteMarketOrderResponse()
                 {
