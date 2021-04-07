@@ -17,6 +17,9 @@ namespace Service.Simulation.FTX.Grpc
         Task<GetMarketInfoResponse> GetMarketInfoAsync(GetMarketInfoRequest request);
 
         [OperationContract]
+        Task<GetMarketInfoListResponse> GetMarketInfoListAsync();
+
+        [OperationContract]
         Task SetBalanceAsync(SetBalanceRequest request);
     }
 }

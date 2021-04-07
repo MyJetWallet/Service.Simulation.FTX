@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -10,7 +11,7 @@ using Service.Simulation.FTX.NoSql;
 
 namespace Service.Simulation.FTX.Services
 {
-    public class SimulationFtxTradingService : ISimulationFtxTradingService
+    internal class SimulationFtxTradingService : ISimulationFtxTradingService
     {
         private readonly ILogger<SimulationFtxTradingService> _logger;
         private readonly FTXDataApi _api;
@@ -230,15 +231,42 @@ namespace Service.Simulation.FTX.Services
 
             var resp = new GetMarketInfoResponse()
             {
-                Info = new GetMarketInfoResponse.MarketInfo()
-                {
-                    Market = data.result.name,
-                    BaseAsset = data.result.baseCurrency,
-                    QuoteAsset = data.result.quoteCurrency
-                }
+                Info = ReadMarket(data.result)
             };
 
             return resp;
+        }
+
+        public async Task<GetMarketInfoListResponse> GetMarketInfoListAsync()
+        {
+            var data = await _api.GetMarketInfoList();
+
+            var resp = new GetMarketInfoListResponse();
+
+            foreach (var market in data.result.Where(e => e.type == "spot" && e.enabled))
+            {
+                resp.Info.Add(ReadMarket(market));
+            }
+
+            return resp;
+        }
+
+        private MarketInfo ReadMarket(ResultData market)
+        {
+            var result = new MarketInfo()
+            {
+                Market = market.name,
+                BaseAsset = market.baseCurrency,
+                QuoteAsset = market.quoteCurrency,
+                MinVolume = (double)market.minProvideSize
+            };
+
+            var volumeParams = market.sizeIncrement.ToString(CultureInfo.InvariantCulture).Split('.');
+            var priceParams = market.priceIncrement.ToString(CultureInfo.InvariantCulture).Split('.');
+            result.BaseAccuracy = volumeParams.Length == 2 ? volumeParams.Length : 0;
+            result.PriceAccuracy = priceParams.Length == 2 ? priceParams.Length : 0;
+
+            return result;
         }
 
         public async Task SetBalanceAsync(SetBalanceRequest request)
