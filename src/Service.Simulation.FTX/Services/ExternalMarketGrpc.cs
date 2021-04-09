@@ -63,23 +63,23 @@ namespace Service.Simulation.FTX.Services
             return new GetMarketInfoListResponse() {Infos = _marketInfoData.Values.ToList()};
         }
 
-        public async Task<ExchangeTrade> MarketTrade(string market, OrderSide side, double volume, string referenceId)
+        public async Task<ExchangeTrade> MarketTrade(MarketTradeRequest request)
         {
             using var activity = MyTelemetry.StartActivity("MarketTrade");
 
             try
             {
-                var request = new ExecuteMarketOrderRequest()
+                var tradeRequest = new ExecuteMarketOrderRequest()
                 {
-                    ClientId = referenceId,
-                    Market = market,
-                    Side = side == OrderSide.Buy ? SimulationFtxOrderSide.Buy : SimulationFtxOrderSide.Sell,
-                    Size = volume
+                    ClientId = request.ReferenceId,
+                    Market = request.Market,
+                    Side = request.Side == OrderSide.Buy ? SimulationFtxOrderSide.Buy : SimulationFtxOrderSide.Sell,
+                    Size = request.Volume
                 };
 
                 request.AddToActivityAsJsonTag("request");
 
-                var marketInfo = await GetMarketInfoAsync(new MarketRequest() {Market = market});
+                var marketInfo = await GetMarketInfoAsync(new MarketRequest() {Market = request.Market });
                 if (marketInfo?.Info == null)
                 {
                     throw new Exception(
@@ -88,7 +88,7 @@ namespace Service.Simulation.FTX.Services
 
                 marketInfo.AddToActivityAsJsonTag("market-info");
 
-                var resp = await _service.ExecuteMarketOrderAsync(request);
+                var resp = await _service.ExecuteMarketOrderAsync(tradeRequest);
 
                 resp.AddToActivityAsJsonTag("response");
 
