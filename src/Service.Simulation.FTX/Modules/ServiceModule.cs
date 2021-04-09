@@ -1,7 +1,9 @@
-﻿using Autofac;
+﻿using System.Security.Cryptography;
+using Autofac;
 using Autofac.Core;
 using Autofac.Core.Registration;
 using MyNoSqlServer.Abstractions;
+using Service.Simulation.FTX.Grpc;
 using Service.Simulation.FTX.NoSql;
 using Service.Simulation.FTX.Services;
 
@@ -22,6 +24,16 @@ namespace Service.Simulation.FTX.Modules
                 .SingleInstance();
 
             RegisterMyNoSqlWriter<BalancesNoSql>(builder, BalancesNoSql.TableName);
+
+            builder
+                .RegisterType<SimulationFtxTradingService>()
+                .As<ISimulationFtxTradingService>();
+
+            builder
+                .RegisterType<OrderBookManager>()
+                .AsSelf()
+                .SingleInstance();
+
         }
 
         private void RegisterMyNoSqlWriter<TEntity>(ContainerBuilder builder, string table)

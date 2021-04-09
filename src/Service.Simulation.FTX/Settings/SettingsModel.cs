@@ -10,5 +10,8 @@ namespace Service.Simulation.FTX.Settings
 
         [YamlProperty("SimulationFTX.MyNoSqlWriterUrl")]
         public string MyNoSqlWriterUrl { get; set; }
+
+        [YamlProperty("SimulationFTX.InstrumentsOriginalSymbolToSymbol")]
+        public string FtxInstrumentsOriginalSymbolToSymbol { get; set; }
     }
 }

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Autofac;
+using MyJetWallet.Domain.ExternalMarketApi;
 using MyJetWallet.Sdk.GrpcMetrics;
 using MyJetWallet.Sdk.GrpcSchema;
 using Prometheus;
@@ -49,7 +50,10 @@ namespace Service.Simulation.FTX
             {
                 endpoints.MapGrpcSchema<SimulationFtxTradingService, ISimulationFtxTradingService>();
                 endpoints.MapGrpcSchema<SimulationFtxTradeHistoryService, ISimulationFtxTradeHistoryService>();
+                endpoints.MapGrpcSchema<ExternalMarketGrpc, IExternalMarket>();
+                endpoints.MapGrpcSchema<OrderBookSourceGrpc, IOrderBookSource>();
                 
+
 
                 endpoints.MapGrpcSchemaRegistry();
 
