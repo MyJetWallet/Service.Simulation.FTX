@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Logging;
 using MyJetWallet.Connector.Ftx.WebSocket;
@@ -6,7 +7,7 @@ using MyJetWallet.Domain.ExternalMarketApi.Models;
 
 namespace Service.Simulation.FTX.Services
 {
-    public class OrderBookManager
+    public class OrderBookManager: IDisposable
     {
         public const string Source = "Simulation-FTX";
 
