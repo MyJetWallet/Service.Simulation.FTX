@@ -15,7 +15,7 @@ namespace Service.Simulation.FTX.Services
 
         private readonly FtxWsOrderBooks _wsFtx;
 
-        public OrderBookManager(LoggerFactory loggerFactory)
+        public OrderBookManager(ILoggerFactory loggerFactory)
         {
             _symbolList = !string.IsNullOrEmpty(Program.Settings.FtxInstrumentsOriginalSymbolToSymbol)
                 ? Program.Settings.FtxInstrumentsOriginalSymbolToSymbol.Split(';').ToList()
