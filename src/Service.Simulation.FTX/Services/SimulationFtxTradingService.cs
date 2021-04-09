@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
@@ -241,7 +242,10 @@ namespace Service.Simulation.FTX.Services
         {
             var data = await _api.GetMarketInfoList();
 
-            var resp = new GetMarketInfoListResponse();
+            var resp = new GetMarketInfoListResponse()
+            {
+                Info = new List<MarketInfo>()
+            };
 
             foreach (var market in data.result.Where(e => e.type == "spot" && e.enabled))
             {
