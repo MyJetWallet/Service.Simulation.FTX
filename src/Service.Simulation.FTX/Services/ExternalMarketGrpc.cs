@@ -40,7 +40,8 @@ namespace Service.Simulation.FTX.Services
         public async Task<GetBalancesResponse> GetBalancesAsync()
         {
             var resp = await _service.GetBalancesAsync();
-            var result = resp.Balances.ToDictionary(e => e.Symbol, e => e.Amount);
+            var result = resp.Balances.Select(e => new ExchangeBalance()
+                {Symbol = e.Symbol, Balance = (decimal)e.Amount, Free = (decimal)e.Amount}).ToList();
             return new GetBalancesResponse(){Balances = result};
         }
 
