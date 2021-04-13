@@ -11,9 +11,6 @@ using MyJetWallet.Sdk.Service;
 using Newtonsoft.Json;
 using Service.Simulation.FTX.Grpc;
 using Service.Simulation.FTX.Grpc.Models;
-using GetBalancesResponse = MyJetWallet.Domain.ExternalMarketApi.Dto.GetBalancesResponse;
-using GetMarketInfoListResponse = MyJetWallet.Domain.ExternalMarketApi.Dto.GetMarketInfoListResponse;
-using GetMarketInfoResponse = MyJetWallet.Domain.ExternalMarketApi.Dto.GetMarketInfoResponse;
 
 namespace Service.Simulation.FTX.Services
 {
@@ -42,31 +39,31 @@ namespace Service.Simulation.FTX.Services
             return Task.FromResult(new GetNameResult() {Name = "Simulation-FTX"});
         }
 
-        public async Task<GetBalancesResponse> GetBalancesAsync()
+        public async Task<MyJetWallet.Domain.ExternalMarketApi.Dto.GetBalancesResponse> GetBalancesAsync()
         {
             var resp = await _service.GetBalancesAsync();
             var result = resp.Balances.Select(e => new ExchangeBalance()
                 {Symbol = e.Symbol, Balance = (decimal)e.Amount, Free = (decimal)e.Amount}).ToList();
-            return new GetBalancesResponse(){Balances = result};
+            return new MyJetWallet.Domain.ExternalMarketApi.Dto.GetBalancesResponse(){Balances = result};
         }
 
-        public async Task<GetMarketInfoResponse> GetMarketInfoAsync(MarketRequest request)
+        public async Task<MyJetWallet.Domain.ExternalMarketApi.Dto.GetMarketInfoResponse> GetMarketInfoAsync(MarketRequest request)
         {
             if (_marketInfoData!.Any() != true)
                 await LoadMarketInfo();
 
             if (_marketInfoData.TryGetValue(request.Market, out var resp))
-                return new GetMarketInfoResponse(){Info = resp};
+                return new MyJetWallet.Domain.ExternalMarketApi.Dto.GetMarketInfoResponse(){Info = resp};
 
-            return new GetMarketInfoResponse() { Info = null };
+            return new MyJetWallet.Domain.ExternalMarketApi.Dto.GetMarketInfoResponse() { Info = null };
         }
 
-        public async Task<GetMarketInfoListResponse> GetMarketInfoListAsync()
+        public async Task<MyJetWallet.Domain.ExternalMarketApi.Dto.GetMarketInfoListResponse> GetMarketInfoListAsync()
         {
             if (_marketInfoData!.Any() != true)
                 await LoadMarketInfo();
 
-            return new GetMarketInfoListResponse() {Infos = _marketInfoData.Values.Where(e => _symbolList.Contains(e.Market)).ToList()};
+            return new MyJetWallet.Domain.ExternalMarketApi.Dto.GetMarketInfoListResponse() {Infos = _marketInfoData.Values.Where(e => _symbolList.Contains(e.Market)).ToList()};
         }
 
         public async Task<ExchangeTrade> MarketTrade(MarketTradeRequest request)
