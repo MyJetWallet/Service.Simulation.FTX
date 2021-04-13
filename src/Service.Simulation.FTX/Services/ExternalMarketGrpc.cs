@@ -23,6 +23,7 @@ namespace Service.Simulation.FTX.Services
 
         private readonly ILogger<ExternalMarketGrpc> _logger;
         private readonly ISimulationFtxTradingService _service;
+        private List<string> _symbolList;
 
         public ExternalMarketGrpc(
             ILogger<ExternalMarketGrpc> logger,
@@ -30,6 +31,10 @@ namespace Service.Simulation.FTX.Services
         {
             _logger = logger;
             _service = service;
+
+            _symbolList = !string.IsNullOrEmpty(Program.Settings.FtxInstrumentsOriginalSymbolToSymbol)
+                ? Program.Settings.FtxInstrumentsOriginalSymbolToSymbol.Split(';').ToList()
+                : new List<string>();
         }
 
         public Task<GetNameResult> GetNameAsync()
@@ -61,7 +66,7 @@ namespace Service.Simulation.FTX.Services
             if (_marketInfoData!.Any() != true)
                 await LoadMarketInfo();
 
-            return new GetMarketInfoListResponse() {Infos = _marketInfoData.Values.ToList()};
+            return new GetMarketInfoListResponse() {Infos = _marketInfoData.Values.Where(e => _symbolList.Contains(e.Market)).ToList()};
         }
 
         public async Task<ExchangeTrade> MarketTrade(MarketTradeRequest request)
