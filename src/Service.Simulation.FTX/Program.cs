@@ -1,14 +1,16 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using System;
+using System.Diagnostics;
+using System.Linq;
 using System.Net;
 using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using MyJetWallet.Sdk.Service;
+using MySettingsReader;
 using Service.Simulation.FTX.Settings;
-using SimpleTrading.SettingsReader;
 
 namespace Service.Simulation.FTX
 {
@@ -24,7 +26,7 @@ namespace Service.Simulation.FTX
         {
             return () =>
             {
-                var settings = SettingsReader.ReadSettings<SettingsModel>(SettingsFileName);
+                var settings = SettingsReader.GetSettings<SettingsModel>(SettingsFileName);
                 var value = getter.Invoke(settings);
                 return value;
             };
@@ -34,9 +36,9 @@ namespace Service.Simulation.FTX
         {
             Console.Title = "MyJetWallet Service.Simulation.FTX";
 
-            Settings = SettingsReader.ReadSettings<SettingsModel>(SettingsFileName);
+            Settings = SettingsReader.GetSettings<SettingsModel>(SettingsFileName);
 
-            using var loggerFactory = LogConfigurator.Configure("MyJetWallet", Settings.SeqServiceUrl);
+            using var loggerFactory = LogConfigurator.ConfigureElk("MyJetWallet", Settings.SeqServiceUrl, Program.Settings.ElkLogs);
 
             var logger = loggerFactory.CreateLogger<Program>();
 
@@ -59,6 +61,14 @@ namespace Service.Simulation.FTX
         public static IHostBuilder CreateHostBuilder(ILoggerFactory loggerFactory, string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .UseServiceProviderFactory(new AutofacServiceProviderFactory())
+                .ConfigureLogging(builder =>
+                {
+                    builder.Configure(options =>
+                    {
+                        options.ActivityTrackingOptions = ActivityTrackingOptions.SpanId |
+                                                          ActivityTrackingOptions.TraceId;
+                    });
+                })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     var httpPort = Environment.GetEnvironmentVariable("HTTP_PORT") ?? "8080";

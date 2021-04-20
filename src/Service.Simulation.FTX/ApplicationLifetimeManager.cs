@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿using System;
+using System.Diagnostics;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using MyJetWallet.Sdk.Service;
 using Service.Simulation.FTX.Services;
@@ -20,6 +22,8 @@ namespace Service.Simulation.FTX
 
         protected override void OnStarted()
         {
+            using var _ = MyTelemetry.StartActivity("Application started");
+            
             _logger.LogInformation("OnStarted has been called.");
             _bookManager.Start();
         }

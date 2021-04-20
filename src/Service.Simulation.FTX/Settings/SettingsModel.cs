@@ -1,8 +1,9 @@
-﻿using SimpleTrading.SettingsReader;
+﻿using System.Collections.Generic;
+using MyJetWallet.Sdk.Service;
+using MyYamlParser;
 
 namespace Service.Simulation.FTX.Settings
 {
-    [YamlAttributesOnly]
     public class SettingsModel
     {
         [YamlProperty("SimulationFTX.SeqServiceUrl")]
@@ -13,5 +14,8 @@ namespace Service.Simulation.FTX.Settings
 
         [YamlProperty("SimulationFTX.InstrumentsOriginalSymbolToSymbol")]
         public string FtxInstrumentsOriginalSymbolToSymbol { get; set; }
+
+        [YamlProperty("SimulationFTX.ElkLogs")]
+        public LogElkSettings ElkLogs { get; set; }
     }
 }
