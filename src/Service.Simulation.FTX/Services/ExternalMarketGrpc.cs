@@ -41,6 +41,8 @@ namespace Service.Simulation.FTX.Services
 
         public async Task<MyJetWallet.Domain.ExternalMarketApi.Dto.GetBalancesResponse> GetBalancesAsync()
         {
+            using var activity = MyTelemetry.StartActivity("Get balance");
+
             var resp = await _service.GetBalancesAsync();
             var result = resp.Balances.Select(e => new ExchangeBalance()
                 {Symbol = e.Symbol, Balance = (decimal)e.Amount, Free = (decimal)e.Amount}).ToList();
