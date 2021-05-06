@@ -9,7 +9,7 @@ namespace Service.Simulation.FTX.Services
 {
     public class OrderBookManager: IDisposable
     {
-        public const string Source = "Simulation-FTX";
+        public static string Source { get; private set; }
 
         private readonly List<string> _symbolList;
 
@@ -17,6 +17,8 @@ namespace Service.Simulation.FTX.Services
 
         public OrderBookManager(ILoggerFactory loggerFactory)
         {
+            Source = $"Simulation-{Program.Settings.Name}";
+
             _symbolList = !string.IsNullOrEmpty(Program.Settings.FtxInstrumentsOriginalSymbolToSymbol)
                 ? Program.Settings.FtxInstrumentsOriginalSymbolToSymbol.Split(';').ToList()
                 : new List<string>();

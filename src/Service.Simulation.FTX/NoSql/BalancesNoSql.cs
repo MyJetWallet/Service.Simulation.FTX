@@ -5,18 +5,18 @@ namespace Service.Simulation.FTX.NoSql
 {
     public class BalancesNoSql: MyNoSqlDbEntity
     {
-        public const string TableName = "jetwallet-simulation-ftx-balances";
+        public const string TableName = "jetwallet-simulation-balances";
 
-        public static string GeneratePartitionKey() => "ftx-balances";
+        public static string GeneratePartitionKey(string simulationName) => "simulationName";
         public static string GenerateRowKey(string asset) => asset;
 
         public GetBalancesResponse.Balance Balance { get; set; }
 
-        public static BalancesNoSql Create(GetBalancesResponse.Balance balance)
+        public static BalancesNoSql Create(string simulationName, GetBalancesResponse.Balance balance)
         {
             return new BalancesNoSql()
             {
-                PartitionKey = GeneratePartitionKey(),
+                PartitionKey = GeneratePartitionKey(simulationName),
                 RowKey = GenerateRowKey(balance.Symbol),
                 Balance = balance
             };

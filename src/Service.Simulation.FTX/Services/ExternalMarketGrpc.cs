@@ -36,7 +36,7 @@ namespace Service.Simulation.FTX.Services
 
         public Task<GetNameResult> GetNameAsync()
         {
-            return Task.FromResult(new GetNameResult() {Name = "Simulation-FTX"});
+            return Task.FromResult(new GetNameResult() {Name = OrderBookManager.Source });
         }
 
         public async Task<MyJetWallet.Domain.ExternalMarketApi.Dto.GetBalancesResponse> GetBalancesAsync()

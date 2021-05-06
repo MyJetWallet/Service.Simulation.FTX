@@ -213,7 +213,7 @@ namespace Service.Simulation.FTX.Services
 
         public async Task<GetBalancesResponse> GetBalancesAsync()
         {
-            var data = await _balanceWriter.GetAsync();
+            var data = await _balanceWriter.GetAsync(BalancesNoSql.GeneratePartitionKey(Program.Settings.Name));
             return new GetBalancesResponse()
             {
                 Balances = data.Select(e => e.Balance).ToList()
@@ -275,7 +275,7 @@ namespace Service.Simulation.FTX.Services
 
         public async Task SetBalanceAsync(SetBalanceRequest request)
         {
-            var item = BalancesNoSql.Create(new GetBalancesResponse.Balance()
+            var item = BalancesNoSql.Create(Program.Settings.Name, new GetBalancesResponse.Balance()
             {
                 Symbol = request.Symbol,
                 Amount = request.Amount

@@ -17,5 +17,8 @@ namespace Service.Simulation.FTX.Settings
 
         [YamlProperty("SimulationFTX.ElkLogs")]
         public LogElkSettings ElkLogs { get; set; }
+
+        [YamlProperty("SimulationFTX.Name")]
+        public string Name { get; set; }
     }
 }
