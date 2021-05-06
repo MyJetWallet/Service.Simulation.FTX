@@ -7,7 +7,7 @@ namespace Service.Simulation.FTX.NoSql
     {
         public const string TableName = "jetwallet-simulation-balances";
 
-        public static string GeneratePartitionKey(string simulationName) => "simulationName";
+        public static string GeneratePartitionKey(string simulationName) => simulationName;
         public static string GenerateRowKey(string asset) => asset;
 
         public GetBalancesResponse.Balance Balance { get; set; }
