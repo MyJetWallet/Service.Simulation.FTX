@@ -30,7 +30,10 @@ namespace Service.Simulation.FTX.Services
 
         public async Task<ExecuteMarketOrderResponse> ExecuteMarketOrderAsync(ExecuteMarketOrderRequest request)
         {
+            _logger.LogInformation("ExecuteMarketOrderAsync Request: {tradeText}", JsonConvert.SerializeObject(request));
+
             var marketResp = await GetMarketInfoAsync(new GetMarketInfoRequest() {Market = request.Market});
+
             if (marketResp.Info == null)
             {
                 _logger.LogError("Cannot execute market order: {jsonText}", JsonConvert.SerializeObject(request));
