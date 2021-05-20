@@ -268,10 +268,10 @@ namespace Service.Simulation.FTX.Services
                 MinVolume = (double)market.minProvideSize
             };
 
-            var volumeParams = market.sizeIncrement.ToString(CultureInfo.InvariantCulture).Split('.');
-            var priceParams = market.priceIncrement.ToString(CultureInfo.InvariantCulture).Split('.');
-            result.BaseAccuracy = volumeParams.Length == 2 ? volumeParams.Length : 0;
-            result.PriceAccuracy = priceParams.Length == 2 ? priceParams.Length : 0;
+            //var volumeParams = market.sizeIncrement.ToString(CultureInfo.InvariantCulture).Split('.');
+            //var priceParams = market.priceIncrement.ToString(CultureInfo.InvariantCulture).Split('.');
+            result.BaseAccuracy = 8; //volumeParams.Length == 2 ? volumeParams.Length : 0;
+            result.PriceAccuracy = 8; // priceParams.Length == 2 ? priceParams.Length : 0;
 
             return result;
         }
