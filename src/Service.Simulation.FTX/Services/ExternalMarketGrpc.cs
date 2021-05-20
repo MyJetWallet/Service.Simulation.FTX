@@ -115,21 +115,6 @@ namespace Service.Simulation.FTX.Services
                     Source = (await GetNameAsync()).Name
                 };
 
-                if (result.OppositeVolume <= 0.000001 && result.OppositeVolume > 1000000000)
-                {
-                    throw new Exception($"Wrong OppositeVolume: {result.OppositeVolume.ToString()}");
-                }
-
-                if (result.Price <= 0.000001 && result.Price > 1000000000)
-                {
-                    throw new Exception($"Wrong Price: {result.Price.ToString()}");
-                }
-
-                if (result.Volume <= 0.000001 && result.Volume > 1000000000)
-                {
-                    throw new Exception($"Wrong Volume: {result.Side.ToString()}");
-                }
-
                 result.AddToActivityAsJsonTag("result");
 
                 return result;
