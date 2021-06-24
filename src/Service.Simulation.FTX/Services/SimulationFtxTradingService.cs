@@ -1,25 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using MyNoSqlServer.Abstractions;
 using Newtonsoft.Json;
-using Service.Simulation.FTX.Grpc;
-using Service.Simulation.FTX.Grpc.Models;
 using Service.Simulation.FTX.NoSql;
+using Service.Simulation.Grpc;
+using Service.Simulation.Grpc.Models;
 
 namespace Service.Simulation.FTX.Services
 {
-    internal class SimulationFtxTradingService : ISimulationFtxTradingService
+    internal class SimulationTradingService : ISimulationTradingService
     {
-        private readonly ILogger<SimulationFtxTradingService> _logger;
+        private readonly ILogger<SimulationTradingService> _logger;
         private readonly FTXDataApi _api;
         private readonly IMyNoSqlServerDataWriter<BalancesNoSql> _balanceWriter;
         private readonly TradeHistory _history;
 
-        public SimulationFtxTradingService(ILogger<SimulationFtxTradingService> logger, FTXDataApi api, IMyNoSqlServerDataWriter<BalancesNoSql> balanceWriter,
+        public SimulationTradingService(ILogger<SimulationTradingService> logger, FTXDataApi api,
+            IMyNoSqlServerDataWriter<BalancesNoSql> balanceWriter,
             TradeHistory history)
         {
             _logger = logger;
@@ -30,7 +30,8 @@ namespace Service.Simulation.FTX.Services
 
         public async Task<ExecuteMarketOrderResponse> ExecuteMarketOrderAsync(ExecuteMarketOrderRequest request)
         {
-            _logger.LogInformation("ExecuteMarketOrderAsync Request: {tradeText}", JsonConvert.SerializeObject(request));
+            _logger.LogInformation("ExecuteMarketOrderAsync Request: {tradeText}",
+                JsonConvert.SerializeObject(request));
 
             var marketResp = await GetMarketInfoAsync(new GetMarketInfoRequest() {Market = request.Market});
 
@@ -48,7 +49,9 @@ namespace Service.Simulation.FTX.Services
             var orderBookResp = await _api.GetOrderBook(request.Market);
             if (!orderBookResp.success)
             {
-                _logger.LogError("Cannot execute market order, order book do not found: {errorText}. Request: {jsonText}", orderBookResp.error, JsonConvert.SerializeObject(request));
+                _logger.LogError(
+                    "Cannot execute market order, order book do not found: {errorText}. Request: {jsonText}",
+                    orderBookResp.error, JsonConvert.SerializeObject(request));
                 return new ExecuteMarketOrderResponse()
                 {
                     Success = false,
@@ -60,7 +63,7 @@ namespace Service.Simulation.FTX.Services
             var baseBalance = balances.FirstOrDefault(e => e.Symbol == market.BaseAsset);
             var quoteBalance = balances.FirstOrDefault(e => e.Symbol == market.QuoteAsset);
 
-            if (request.Side == SimulationFtxOrderSide.Buy)
+            if (request.Side == SimulationOrderSide.Buy)
             {
                 var remindVolume = request.Size;
                 var quoteVolume = 0.0;
@@ -100,20 +103,22 @@ namespace Service.Simulation.FTX.Services
                     return new ExecuteMarketOrderResponse()
                     {
                         Success = false,
-                        
                     };
                 }
 
                 quoteBalance.Amount -= quoteVolume;
-                if (baseBalance == null) baseBalance = new GetBalancesResponse.Balance() { Symbol = market.BaseAsset, Amount = 0 };
+                if (baseBalance == null)
+                    baseBalance = new GetBalancesResponse.Balance() {Symbol = market.BaseAsset, Amount = 0};
                 baseBalance.Amount += request.Size;
 
-                await SetBalanceAsync(new SetBalanceRequest() {Symbol = quoteBalance.Symbol, Amount = quoteBalance.Amount});
-                await SetBalanceAsync(new SetBalanceRequest() { Symbol = baseBalance.Symbol, Amount = baseBalance.Amount });
+                await SetBalanceAsync(new SetBalanceRequest()
+                    {Symbol = quoteBalance.Symbol, Amount = quoteBalance.Amount});
+                await SetBalanceAsync(
+                    new SetBalanceRequest() {Symbol = baseBalance.Symbol, Amount = baseBalance.Amount});
 
                 var price = quoteVolume / request.Size;
 
-                var trade = new FtxSimTrade()
+                var trade = new SimTrade()
                 {
                     Market = request.Market,
                     ClientId = request.ClientId,
@@ -181,15 +186,18 @@ namespace Service.Simulation.FTX.Services
 
                 baseBalance.Amount -= request.Size;
 
-                if (quoteBalance == null) quoteBalance = new GetBalancesResponse.Balance() { Symbol = market.QuoteAsset, Amount = 0};
+                if (quoteBalance == null)
+                    quoteBalance = new GetBalancesResponse.Balance() {Symbol = market.QuoteAsset, Amount = 0};
                 quoteBalance.Amount += quoteVolume;
 
-                await SetBalanceAsync(new SetBalanceRequest() { Symbol = baseBalance.Symbol, Amount = baseBalance.Amount });
-                await SetBalanceAsync(new SetBalanceRequest() { Symbol = quoteBalance.Symbol, Amount = quoteBalance.Amount });
+                await SetBalanceAsync(
+                    new SetBalanceRequest() {Symbol = baseBalance.Symbol, Amount = baseBalance.Amount});
+                await SetBalanceAsync(new SetBalanceRequest()
+                    {Symbol = quoteBalance.Symbol, Amount = quoteBalance.Amount});
 
                 var price = quoteVolume / request.Size;
 
-                var trade = new FtxSimTrade()
+                var trade = new SimTrade()
                 {
                     Market = request.Market,
                     ClientId = request.ClientId,
@@ -265,7 +273,7 @@ namespace Service.Simulation.FTX.Services
                 Market = market.name,
                 BaseAsset = market.baseCurrency,
                 QuoteAsset = market.quoteCurrency,
-                MinVolume = (double)market.minProvideSize
+                MinVolume = (double) market.minProvideSize
             };
 
             //var volumeParams = market.sizeIncrement.ToString(CultureInfo.InvariantCulture).Split('.');
@@ -287,6 +295,4 @@ namespace Service.Simulation.FTX.Services
             await _balanceWriter.InsertOrReplaceAsync(item);
         }
     }
-
-    
 }

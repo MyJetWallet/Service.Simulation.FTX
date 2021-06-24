@@ -1,6 +1,6 @@
 using System.Runtime.Serialization;
 
-namespace Service.Simulation.FTX.Grpc.Models
+namespace Service.Simulation.Grpc.Models
 {
     [DataContract]
     public class GetMarketInfoRequest

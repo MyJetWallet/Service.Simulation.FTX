@@ -9,8 +9,11 @@ using MyJetWallet.Domain.ExternalMarketApi.Models;
 using MyJetWallet.Domain.Orders;
 using MyJetWallet.Sdk.Service;
 using Newtonsoft.Json;
-using Service.Simulation.FTX.Grpc;
-using Service.Simulation.FTX.Grpc.Models;
+using Service.Simulation.Grpc;
+using Service.Simulation.Grpc.Models;
+using GetBalancesResponse = MyJetWallet.Domain.ExternalMarketApi.Dto.GetBalancesResponse;
+using GetMarketInfoListResponse = MyJetWallet.Domain.ExternalMarketApi.Dto.GetMarketInfoListResponse;
+using GetMarketInfoResponse = MyJetWallet.Domain.ExternalMarketApi.Dto.GetMarketInfoResponse;
 
 namespace Service.Simulation.FTX.Services
 {
@@ -19,12 +22,12 @@ namespace Service.Simulation.FTX.Services
         private static Dictionary<string, ExchangeMarketInfo> _marketInfoData = new Dictionary<string, ExchangeMarketInfo>();
 
         private readonly ILogger<ExternalMarketGrpc> _logger;
-        private readonly ISimulationFtxTradingService _service;
+        private readonly ISimulationTradingService _service;
         private List<string> _symbolList;
 
         public ExternalMarketGrpc(
             ILogger<ExternalMarketGrpc> logger,
-            ISimulationFtxTradingService service)
+            ISimulationTradingService service)
         {
             _logger = logger;
             _service = service;
@@ -39,33 +42,33 @@ namespace Service.Simulation.FTX.Services
             return Task.FromResult(new GetNameResult() {Name = OrderBookManager.Source });
         }
 
-        public async Task<MyJetWallet.Domain.ExternalMarketApi.Dto.GetBalancesResponse> GetBalancesAsync()
+        public async Task<GetBalancesResponse> GetBalancesAsync()
         {
             using var activity = MyTelemetry.StartActivity("Get balance");
 
             var resp = await _service.GetBalancesAsync();
             var result = resp.Balances.Select(e => new ExchangeBalance()
                 {Symbol = e.Symbol, Balance = (decimal)e.Amount, Free = (decimal)e.Amount}).ToList();
-            return new MyJetWallet.Domain.ExternalMarketApi.Dto.GetBalancesResponse(){Balances = result};
+            return new GetBalancesResponse(){Balances = result};
         }
 
-        public async Task<MyJetWallet.Domain.ExternalMarketApi.Dto.GetMarketInfoResponse> GetMarketInfoAsync(MarketRequest request)
+        public async Task<GetMarketInfoResponse> GetMarketInfoAsync(MarketRequest request)
         {
             if (_marketInfoData!.Any() != true)
                 await LoadMarketInfo();
 
             if (_marketInfoData.TryGetValue(request.Market, out var resp))
-                return new MyJetWallet.Domain.ExternalMarketApi.Dto.GetMarketInfoResponse(){Info = resp};
+                return new GetMarketInfoResponse(){Info = resp};
 
-            return new MyJetWallet.Domain.ExternalMarketApi.Dto.GetMarketInfoResponse() { Info = null };
+            return new GetMarketInfoResponse() { Info = null };
         }
 
-        public async Task<MyJetWallet.Domain.ExternalMarketApi.Dto.GetMarketInfoListResponse> GetMarketInfoListAsync()
+        public async Task<GetMarketInfoListResponse> GetMarketInfoListAsync()
         {
             if (_marketInfoData!.Any() != true)
                 await LoadMarketInfo();
 
-            return new MyJetWallet.Domain.ExternalMarketApi.Dto.GetMarketInfoListResponse() {Infos = _marketInfoData.Values.Where(e => _symbolList.Contains(e.Market)).ToList()};
+            return new GetMarketInfoListResponse() {Infos = _marketInfoData.Values.Where(e => _symbolList.Contains(e.Market)).ToList()};
         }
 
         public async Task<ExchangeTrade> MarketTrade(MarketTradeRequest request)
@@ -78,7 +81,7 @@ namespace Service.Simulation.FTX.Services
                 {
                     ClientId = request.ReferenceId,
                     Market = request.Market,
-                    Side = request.Side == OrderSide.Buy ? SimulationFtxOrderSide.Buy : SimulationFtxOrderSide.Sell,
+                    Side = request.Side == OrderSide.Buy ? SimulationOrderSide.Buy : SimulationOrderSide.Sell,
                     Size = request.Volume
                 };
 
@@ -110,7 +113,7 @@ namespace Service.Simulation.FTX.Services
                     Price = resp.Trade.Price,
                     Volume = resp.Trade.Size,
                     Timestamp = resp.Trade.Timestamp,
-                    Side = resp.Trade.Side == SimulationFtxOrderSide.Buy ? OrderSide.Buy : OrderSide.Sell,
+                    Side = resp.Trade.Side == SimulationOrderSide.Buy ? OrderSide.Buy : OrderSide.Sell,
                     OppositeVolume = (double) ((decimal) resp.Trade.Price * (decimal) resp.Trade.Size),
                     Source = (await GetNameAsync()).Name
                 };

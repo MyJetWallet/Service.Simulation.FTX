@@ -5,25 +5,26 @@ using Grpc.Net.Client;
 using JetBrains.Annotations;
 using MyJetWallet.Sdk.GrpcMetrics;
 using ProtoBuf.Grpc.Client;
-using Service.Simulation.FTX.Grpc;
+using Service.Simulation.Grpc;
 
 namespace Service.Simulation.FTX.Client
 {
     [UsedImplicitly]
-    public class SimulationFTXClientFactory
+    public class SimulationFtxClientFactory
     {
         private readonly CallInvoker _channel;
 
-        public SimulationFTXClientFactory(string assetsDictionaryGrpcServiceUrl)
+        public SimulationFtxClientFactory(string assetsDictionaryGrpcServiceUrl)
         {
             AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
             var channel = GrpcChannel.ForAddress(assetsDictionaryGrpcServiceUrl);
             _channel = channel.Intercept(new PrometheusMetricsInterceptor());
         }
 
-        public ISimulationFtxTradingService GetSimulationFtxTradingService() => _channel.CreateGrpcService<ISimulationFtxTradingService>();
-        public ISimulationFtxTradeHistoryService GetSimulationFtxTradeHistoryService() => _channel.CreateGrpcService<ISimulationFtxTradeHistoryService>();
+        public ISimulationTradingService GetSimulationFtxTradingService() =>
+            _channel.CreateGrpcService<ISimulationTradingService>();
 
-        
+        public ISimulationTradeHistoryService GetSimulationFtxTradeHistoryService() =>
+            _channel.CreateGrpcService<ISimulationTradeHistoryService>();
     }
 }

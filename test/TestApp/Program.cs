@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using ProtoBuf.Grpc.Client;
 using Service.Simulation.FTX.Client;
-using Service.Simulation.FTX.Grpc.Models;
 
 namespace TestApp
 {
@@ -16,7 +15,7 @@ namespace TestApp
             Console.ReadLine();
 
 
-            var factory = new SimulationFTXClientFactory("http://localhost:80");
+            var factory = new SimulationFtxClientFactory("http://simulation-ftx-2.services.svc.cluster.local:80");
             var client = factory.GetSimulationFtxTradingService();
 
             

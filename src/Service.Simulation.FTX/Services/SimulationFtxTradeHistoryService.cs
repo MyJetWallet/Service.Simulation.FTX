@@ -1,22 +1,22 @@
 ﻿using System.Threading.Tasks;
-using Service.Simulation.FTX.Grpc;
-using Service.Simulation.FTX.Grpc.Models;
+using Service.Simulation.Grpc;
+using Service.Simulation.Grpc.Models;
 
 namespace Service.Simulation.FTX.Services
 {
-    public class SimulationFtxTradeHistoryService: ISimulationFtxTradeHistoryService
+    public class SimulationTradeHistoryService : ISimulationTradeHistoryService
     {
         private readonly TradeHistory _history;
 
-        public SimulationFtxTradeHistoryService(TradeHistory history)
+        public SimulationTradeHistoryService(TradeHistory history)
         {
             _history = history;
         }
 
-        public Task<GetFtxSimTradesResponse> GetTradesAsync()
+        public Task<GetSimTradesResponse> GetTradesAsync()
         {
             var data = _history.GetTrades();
-            var resp = new GetFtxSimTradesResponse()
+            var resp = new GetSimTradesResponse()
             {
                 Trades = data
             };
