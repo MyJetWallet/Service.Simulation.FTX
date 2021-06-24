@@ -12,14 +12,14 @@ using Service.Simulation.FTX.NoSql;
 
 namespace Service.Simulation.FTX.Services
 {
-    internal class SimulationFtxTradingService : ISimulationFtxTradingService
+    internal class SimulationTradingService : ISimulationTradingService
     {
-        private readonly ILogger<SimulationFtxTradingService> _logger;
+        private readonly ILogger<SimulationTradingService> _logger;
         private readonly FTXDataApi _api;
         private readonly IMyNoSqlServerDataWriter<BalancesNoSql> _balanceWriter;
         private readonly TradeHistory _history;
 
-        public SimulationFtxTradingService(ILogger<SimulationFtxTradingService> logger, FTXDataApi api, IMyNoSqlServerDataWriter<BalancesNoSql> balanceWriter,
+        public SimulationTradingService(ILogger<SimulationTradingService> logger, FTXDataApi api, IMyNoSqlServerDataWriter<BalancesNoSql> balanceWriter,
             TradeHistory history)
         {
             _logger = logger;

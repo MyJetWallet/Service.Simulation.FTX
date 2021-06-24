@@ -4,11 +4,11 @@ using Service.Simulation.FTX.Grpc.Models;
 
 namespace Service.Simulation.FTX.Services
 {
-    public class SimulationFtxTradeHistoryService: ISimulationFtxTradeHistoryService
+    public class SimulationTradeHistoryService: ISimulationTradeHistoryService
     {
         private readonly TradeHistory _history;
 
-        public SimulationFtxTradeHistoryService(TradeHistory history)
+        public SimulationTradeHistoryService(TradeHistory history)
         {
             _history = history;
         }

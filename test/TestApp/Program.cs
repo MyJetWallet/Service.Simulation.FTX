@@ -16,7 +16,7 @@ namespace TestApp
             Console.ReadLine();
 
 
-            var factory = new SimulationFTXClientFactory("http://localhost:80");
+            var factory = new SimulationClientFactory("http://simulation-ftx-2.services.svc.cluster.local:80");
             var client = factory.GetSimulationFtxTradingService();
 
             

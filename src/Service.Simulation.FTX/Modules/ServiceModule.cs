@@ -26,8 +26,8 @@ namespace Service.Simulation.FTX.Modules
             RegisterMyNoSqlWriter<BalancesNoSql>(builder, BalancesNoSql.TableName);
 
             builder
-                .RegisterType<SimulationFtxTradingService>()
-                .As<ISimulationFtxTradingService>();
+                .RegisterType<SimulationTradingService>()
+                .As<ISimulationTradingService>();
 
             builder
                 .RegisterType<OrderBookManager>()

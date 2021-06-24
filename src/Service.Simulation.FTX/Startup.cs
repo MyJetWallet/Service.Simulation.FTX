@@ -48,8 +48,8 @@ namespace Service.Simulation.FTX
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapGrpcSchema<SimulationFtxTradingService, ISimulationFtxTradingService>();
-                endpoints.MapGrpcSchema<SimulationFtxTradeHistoryService, ISimulationFtxTradeHistoryService>();
+                endpoints.MapGrpcSchema<SimulationTradingService, ISimulationTradingService>();
+                endpoints.MapGrpcSchema<SimulationTradeHistoryService, ISimulationTradeHistoryService>();
                 endpoints.MapGrpcSchema<ExternalMarketGrpc, IExternalMarket>();
                 endpoints.MapGrpcSchema<OrderBookSourceGrpc, IOrderBookSource>();
                 

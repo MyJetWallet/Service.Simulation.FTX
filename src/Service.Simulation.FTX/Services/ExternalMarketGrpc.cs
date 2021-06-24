@@ -19,12 +19,12 @@ namespace Service.Simulation.FTX.Services
         private static Dictionary<string, ExchangeMarketInfo> _marketInfoData = new Dictionary<string, ExchangeMarketInfo>();
 
         private readonly ILogger<ExternalMarketGrpc> _logger;
-        private readonly ISimulationFtxTradingService _service;
+        private readonly ISimulationTradingService _service;
         private List<string> _symbolList;
 
         public ExternalMarketGrpc(
             ILogger<ExternalMarketGrpc> logger,
-            ISimulationFtxTradingService service)
+            ISimulationTradingService service)
         {
             _logger = logger;
             _service = service;
