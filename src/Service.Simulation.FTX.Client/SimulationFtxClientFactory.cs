@@ -10,11 +10,11 @@ using Service.Simulation.FTX.Grpc;
 namespace Service.Simulation.FTX.Client
 {
     [UsedImplicitly]
-    public class SimulationClientFactory
+    public class SimulationFtxClientFactory
     {
         private readonly CallInvoker _channel;
 
-        public SimulationClientFactory(string assetsDictionaryGrpcServiceUrl)
+        public SimulationFtxClientFactory(string assetsDictionaryGrpcServiceUrl)
         {
             AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
             var channel = GrpcChannel.ForAddress(assetsDictionaryGrpcServiceUrl);
