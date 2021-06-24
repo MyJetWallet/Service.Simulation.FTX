@@ -1,15 +1,13 @@
-﻿using System.Security.Cryptography;
-using Autofac;
-using Autofac.Core;
-using Autofac.Core.Registration;
+﻿using Autofac;
 using MyNoSqlServer.Abstractions;
-using Service.Simulation.FTX.Grpc;
+using MyNoSqlServer.DataWriter;
 using Service.Simulation.FTX.NoSql;
 using Service.Simulation.FTX.Services;
+using Service.Simulation.Grpc;
 
 namespace Service.Simulation.FTX.Modules
 {
-    public class ServiceModule: Module
+    public class ServiceModule : Module
     {
         protected override void Load(ContainerBuilder builder)
         {
@@ -33,16 +31,16 @@ namespace Service.Simulation.FTX.Modules
                 .RegisterType<OrderBookManager>()
                 .AsSelf()
                 .SingleInstance();
-
         }
 
         private void RegisterMyNoSqlWriter<TEntity>(ContainerBuilder builder, string table)
             where TEntity : IMyNoSqlDbEntity, new()
         {
-            builder.Register(ctx => new MyNoSqlServer.DataWriter.MyNoSqlServerDataWriter<TEntity>(Program.ReloadedSettings(e => e.MyNoSqlWriterUrl), table, true))
+            builder.Register(ctx =>
+                    new MyNoSqlServerDataWriter<TEntity>(Program.ReloadedSettings(e => e.MyNoSqlWriterUrl), table,
+                        true))
                 .As<IMyNoSqlServerDataWriter<TEntity>>()
                 .SingleInstance();
-
         }
     }
 }

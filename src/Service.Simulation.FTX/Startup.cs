@@ -1,18 +1,18 @@
 ﻿using System.Reflection;
+using Autofac;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Autofac;
 using MyJetWallet.Domain.ExternalMarketApi;
 using MyJetWallet.Sdk.GrpcMetrics;
 using MyJetWallet.Sdk.GrpcSchema;
 using Prometheus;
 using ProtoBuf.Grpc.Server;
-using Service.Simulation.FTX.Grpc;
 using Service.Simulation.FTX.Modules;
 using Service.Simulation.FTX.Services;
+using Service.Simulation.Grpc;
 using SimpleTrading.BaseMetrics;
 using SimpleTrading.ServiceStatusReporterConnector;
 

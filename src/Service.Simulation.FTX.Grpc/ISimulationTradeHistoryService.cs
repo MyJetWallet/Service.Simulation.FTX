@@ -1,13 +1,13 @@
 using System.ServiceModel;
 using System.Threading.Tasks;
-using Service.Simulation.FTX.Grpc.Models;
+using Service.Simulation.Grpc.Models;
 
-namespace Service.Simulation.FTX.Grpc
+namespace Service.Simulation.Grpc
 {
     [ServiceContract]
     public interface ISimulationTradeHistoryService
     {
         [OperationContract]
-        Task<GetFtxSimTradesResponse> GetTradesAsync();
+        Task<GetSimTradesResponse> GetTradesAsync();
     }
 }

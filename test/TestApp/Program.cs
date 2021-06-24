@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using ProtoBuf.Grpc.Client;
 using Service.Simulation.FTX.Client;
-using Service.Simulation.FTX.Grpc.Models;
 
 namespace TestApp
 {

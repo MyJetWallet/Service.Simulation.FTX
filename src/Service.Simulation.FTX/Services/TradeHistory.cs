@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Service.Simulation.FTX.Grpc.Models;
+using Service.Simulation.Grpc.Models;
 
 namespace Service.Simulation.FTX.Services
 {
     public class TradeHistory
     {
-        private List<FtxSimTrade> _data = new List<FtxSimTrade>();
+        private List<SimTrade> _data = new List<SimTrade>();
 
-        public void AddTrade(FtxSimTrade trade)
+        public void AddTrade(SimTrade trade)
         {
             lock (_data)
             {
@@ -21,14 +21,12 @@ namespace Service.Simulation.FTX.Services
             }
         }
 
-        public List<FtxSimTrade> GetTrades()
+        public List<SimTrade> GetTrades()
         {
             lock (_data)
             {
                 return _data.ToList();
             }
         }
-
-        
     }
 }

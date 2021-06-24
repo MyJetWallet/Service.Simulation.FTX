@@ -1,9 +1,9 @@
 ﻿using MyNoSqlServer.Abstractions;
-using Service.Simulation.FTX.Grpc.Models;
+using Service.Simulation.Grpc.Models;
 
 namespace Service.Simulation.FTX.NoSql
 {
-    public class BalancesNoSql: MyNoSqlDbEntity
+    public class BalancesNoSql : MyNoSqlDbEntity
     {
         public const string TableName = "jetwallet-simulation-balances";
 

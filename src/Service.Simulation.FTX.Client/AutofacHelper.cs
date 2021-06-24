@@ -1,5 +1,5 @@
 ﻿using Autofac;
-using Service.Simulation.FTX.Grpc;
+using Service.Simulation.Grpc;
 
 namespace Service.Simulation.FTX.Client
 {
