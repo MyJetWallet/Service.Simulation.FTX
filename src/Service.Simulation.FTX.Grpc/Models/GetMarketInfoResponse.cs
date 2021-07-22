@@ -25,6 +25,9 @@ namespace Service.Simulation.Grpc.Models
         [DataMember(Order = 4)] public int BaseAccuracy { get; set; }
         [DataMember(Order = 5)] public int PriceAccuracy { get; set; }
         [DataMember(Order = 6)] public double MinVolume { get; set; }
+        [DataMember(Order = 7)] public string AssociateInstrument { get; set; }
+        [DataMember(Order = 8)] public string AssociateBaseAsset { get; set; }
+        [DataMember(Order = 9)] public string AssociateQuoteAsset { get; set; }
     }
 
 }
